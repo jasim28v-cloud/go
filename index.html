@@ -12,83 +12,69 @@
         body { background: #000; color: #fff; margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; }
         .app-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
         .app-container::-webkit-scrollbar { display: none; }
-        .video-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #111; }
+        .video-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
         video { width: 100%; height: 100%; object-fit: cover; }
         .glass-actions { position: absolute; left: 20px; bottom: 120px; background: var(--glass-bg); backdrop-filter: blur(15px); padding: 25px 12px; border-radius: 40px; display: flex; flex-direction: column; gap: 30px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 10; }
-        .info-panel { position: absolute; bottom: 40px; right: 20px; left: 100px; z-index: 10; text-align: right; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }
-        .nav-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 20; }
-        .active-tab { color: var(--cyan-glow); }
-        @keyframes pulse-red { 0% { transform: scale(0.95); opacity: 0.7; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
-        .live-indicator { animation: pulse-red 2s infinite; background: #ef4444; width: 8px; height: 8px; border-radius: 50%; }
+        .info-panel { position: absolute; bottom: 40px; right: 20px; left: 100px; z-index: 10; text-align: right; }
+        .stat-label { font-size: 10px; text-align: center; color: var(--cyan-glow); font-weight: 900; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; z-index: 20; }
+        @keyframes pulse-red { 0%, 100% { transform: scale(0.95); } 70% { transform: scale(1); } }
+        .live-indicator { animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body>
 
     <div class="absolute top-0 left-0 right-0 z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent">
         <div class="flex items-center gap-2">
-            <div class="live-indicator"></div>
-            <span class="text-[10px] font-bold tracking-widest text-white/80">LIVE COLLECTION</span>
+            <div class="w-2 h-2 rounded-full bg-red-500 live-indicator"></div>
+            <span class="text-[10px] font-bold tracking-widest uppercase text-white/80">LIVE</span>
         </div>
         <h1 class="text-xl font-black tracking-tighter text-cyan-400 italic">SHADOW STREAM</h1>
-        <i class="far fa-heart text-white/40 text-xl"></i>
     </div>
 
     <div class="app-container" id="feed"></div>
 
     <div class="nav-bar">
-        <div class="flex flex-col items-center active-tab"><i class="fas fa-bolt text-lg"></i><span class="text-[8px] mt-1 font-bold">FEED</span></div>
+        <div class="flex flex-col items-center text-cyan-400"><i class="fas fa-bolt text-lg"></i><span class="text-[8px] mt-1 font-bold">FEED</span></div>
         <div class="flex flex-col items-center text-white/40"><i class="fas fa-search text-lg"></i><span class="text-[8px] mt-1 font-bold">EXPLORE</span></div>
-        <div class="w-12 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
-            <i class="fas fa-plus text-white"></i>
-        </div>
+        <div class="w-12 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-plus text-white"></i></div>
         <div class="flex flex-col items-center text-white/40"><i class="far fa-comment-dots text-lg"></i><span class="text-[8px] mt-1 font-bold">INBOX</span></div>
         <div class="flex flex-col items-center text-white/40"><i class="far fa-user text-lg"></i><span class="text-[8px] mt-1 font-bold">PROFILE</span></div>
     </div>
 
     <script>
+        // الرابط الأساسي المستخرج من حسابك
         const cloudName = 'dssk5tabb';
-        // قائمة أسماء الفيديوهات التي زودتني بها
-        const videoNames = [
-            '01_Itzbic', '02_nz4lq0', '03_wicOob', 
-            '04_qeyknx', '05_ggqazk', '06_quce2q', '07_rone4t'
-        ];
-        
         const feed = document.getElementById('feed');
         
-        videoNames.forEach((vName, index) => {
+        // قائمة الفيديوهات الموجودة في المجموعة التي أرسلتها
+        const myVideos = [
+            { id: '01_Itzbic', title: 'العرض الأول' },
+            { id: '02_nz4lq0', title: 'الحالة الأولى' },
+            { id: '03_wicOob', title: 'الحالة الثانية' },
+            { id: '04_qeyknx', title: 'الحالة الثالثة' },
+            { id: '05_ggqazk', title: 'الحالة الرابعة' },
+            { id: '06_quce2q', title: 'الحالة الخامسة' },
+            { id: '07_rone4t', title: 'الخاتمة النهائية' }
+        ];
+
+        myVideos.forEach((vid) => {
             const card = document.createElement('div');
             card.className = 'video-card';
             
-            const likes = (Math.random() * 50 + 10).toFixed(1) + "K";
-            const views = (Math.random() * 100).toFixed(1) + "K";
-            
-            // الرابط المباشر لكل فيديو باستخدام المعرف الخاص به
-            const videoUrl = `https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/${vName}.mp4`;
+            // بناء الرابط المباشر لكل فيديو
+            const videoUrl = `https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/${vid.id}.mp4`;
             
             card.innerHTML = `
                 <video loop playsinline muted src="${videoUrl}"></video>
-                
                 <div class="glass-actions">
-                    <div class="flex flex-col items-center cursor-pointer">
-                        <i class="fas fa-fire text-2xl text-orange-500"></i>
-                        <div class="text-[10px] text-cyan-400 font-extrabold mt-1">${likes}</div>
-                    </div>
-                    <div class="flex flex-col items-center cursor-pointer">
-                        <i class="fas fa-eye text-2xl text-blue-400"></i>
-                        <div class="text-[10px] text-cyan-400 font-extrabold mt-1">${views}</div>
-                    </div>
-                    <div class="flex flex-col items-center cursor-pointer">
-                        <i class="fas fa-share-alt text-2xl text-white"></i>
-                    </div>
+                    <div class="flex flex-col items-center"><i class="fas fa-fire text-2xl text-orange-500"></i><div class="stat-label">HOT</div></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-eye text-2xl text-blue-400"></i><div class="stat-label">LIVE</div></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-share-alt text-2xl text-white"></i></div>
                 </div>
-
                 <div class="info-panel">
-                    <h3 class="font-bold text-xl text-cyan-400 mb-1">@Shadow_User_${index + 1}</h3>
-                    <p class="text-sm text-white/80 leading-relaxed">فيديو حصري من مجموعتك الجديدة 🔥</p>
-                    <div class="flex items-center justify-end gap-2 text-[10px] text-white/40 mt-3">
-                        <i class="fas fa-music"></i>
-                        <span>الصوت الأصلي - ${vName}</span>
-                    </div>
+                    <h3 class="font-bold text-xl text-cyan-400 mb-1">@Shadow_Pro</h3>
+                    <p class="text-sm text-white/80">${vid.title}</p>
                 </div>
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 pointer-events-none"></div>
             `;
@@ -98,20 +84,13 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const v = entry.target.querySelector('video');
-                if (entry.isIntersecting) {
-                    v.play().catch(() => {});
-                } else {
-                    v.pause();
-                    v.currentTime = 0;
-                }
+                if (entry.isIntersecting) { v.play(); } else { v.pause(); v.currentTime = 0; }
             });
-        }, { threshold: 0.7 });
+        }, { threshold: 0.6 });
 
         document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
 
-        window.onclick = () => {
-            document.querySelectorAll('video').forEach(v => v.muted = false);
-        };
+        window.onclick = () => { document.querySelectorAll('video').forEach(v => v.muted = false); };
     </script>
 </body>
 </html>
