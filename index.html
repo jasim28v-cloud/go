@@ -3,79 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Stream Pro - Fix</title>
+    <title>Shadow Stream Pro - Feed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --cyan-glow: #00f3ff; }
-        body { background: #000; color: #fff; margin: 0; overflow: hidden; }
-        .app-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        :root {
+            --cyan-glow: #00f3ff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body { 
+            background: #000; 
+            color: #fff; 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        .app-container { 
+            height: 100vh; 
+            overflow-y: scroll; 
+            scroll-snap-type: y mandatory; 
+            scrollbar-width: none; 
+        }
         .app-container::-webkit-scrollbar { display: none; }
-        .video-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
-        video { width: 100%; height: 100%; object-fit: cover; background: #000; }
-        .info-panel { position: absolute; bottom: 80px; right: 20px; z-index: 10; }
-        .glass-actions { position: absolute; left: 20px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; }
+
+        .video-card { 
+            height: 100vh; 
+            scroll-snap-align: start; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #000; 
+        }
+
+        video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        .glass-actions {
+            position: absolute; 
+            left: 20px; 
+            bottom: 120px;
+            background: var(--glass-bg); 
+            backdrop-filter: blur(15px);
+            padding: 25px 12px; 
+            border-radius: 40px;
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            z-index: 10;
+        }
+
+        .info-panel { 
+            position: absolute; 
+            bottom: 40px; 
+            right: 20px; 
+            left: 100px; 
+            z-index: 10; 
+            text-align: right; 
+        }
+
+        .stat-label { 
+            font-size: 10px; 
+            text-align: center; 
+            color: var(--cyan-glow); 
+            font-weight: 900; 
+        }
+
+        .nav-bar {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            height: 70px;
+            background: rgba(0,0,0,0.7); 
+            backdrop-filter: blur(15px);
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center;
+            z-index: 20;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .live-indicator { animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body>
 
-    <div class="app-container" id="feed">
+    <div class="absolute top-0 left-0 right-0 z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent">
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-red-500 live-indicator"></div>
+            <span class="text-[10px] font-bold tracking-widest uppercase text-white/80">LIVE</span>
         </div>
+        <h1 class="text-xl font-black tracking-tighter text-cyan-400 italic">SHADOW STREAM</h1>
+        <i class="far fa-heart text-white/40 text-xl cursor-pointer hover:text-red-500 transition-colors"></i>
+    </div>
+
+    <div class="app-container" id="feed"></div>
+
+    <div class="nav-bar">
+        <div class="flex flex-col items-center text-cyan-400 cursor-pointer"><i class="fas fa-bolt text-lg"></i><span class="text-[8px] mt-1 font-bold">FEED</span></div>
+        <div class="flex flex-col items-center text-white/40 cursor-pointer"><i class="fas fa-search text-lg"></i><span class="text-[8px] mt-1 font-bold">EXPLORE</span></div>
+        <div class="w-12 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg cursor-pointer">
+            <i class="fas fa-plus text-white"></i>
+        </div>
+        <div class="flex flex-col items-center text-white/40 cursor-pointer"><i class="far fa-comment-dots text-lg"></i><span class="text-[8px] mt-1 font-bold">INBOX</span></div>
+        <div class="flex flex-col items-center text-white/40 cursor-pointer"><i class="far fa-user text-lg"></i><span class="text-[8px] mt-1 font-bold">PROFILE</span></div>
+    </div>
 
     <script>
         const cloudName = 'dssk5tabb';
         const feed = document.getElementById('feed');
         
-        // قائمة الفيديوهات - تأكد أن هذه الأسماء موجودة في حسابك
-        // ملاحظة: إذا لم تظهر، فهذا يعني أن الأسماء (ID) غير مطابقة لما في السحاب
+        // مصفوفة فيديوهاتك الخاصة
         const myVideos = [
-            { id: '01_Itzbic', title: 'فيديو رقم 1' },
-            { id: '02_nz4lq0', title: 'فيديو رقم 2' },
-            { id: '03_wicOob', title: 'فيديو رقم 3' }
+            { id: '01_Itzbic', title: 'العرض الأول' },
+            { id: '02_nz4lq0', title: 'الحالة الأولى' },
+            { id: '03_wicOob', title: 'الحالة الثانية' },
+            { id: '04_qeyknx', title: 'الحالة الثالثة' },
+            { id: '05_ggqazk', title: 'الحالة الرابعة' },
+            { id: '06_quce2q', title: 'الحالة الخامسة' },
+            { id: '07_rone4t', title: 'الخاتمة النهائية' }
         ];
 
-        myVideos.forEach((vid) => {
+        // بناء الـ Feed بناءً على المصفوفة
+        myVideos.forEach((vid, index) => {
             const card = document.createElement('div');
             card.className = 'video-card';
             
-            // الرابط المباشر الصحيح
-            const videoUrl = `https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/${vid.id}.mp4`;
+            // بيانات عشوائية للتفاعل
+            const likes = (Math.random() * 50 + 10).toFixed(1) + "K";
+            const views = (Math.random() * 100).toFixed(1) + "K";
             
             card.innerHTML = `
-                <video loop playsinline src="${videoUrl}"></video>
+                <video loop playsinline muted src="https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/${vid.id}.mp4"></video>
+                
                 <div class="glass-actions">
-                    <i class="fas fa-heart text-2xl text-red-500"></i>
-                    <i class="fas fa-share text-2xl text-white"></i>
+                    <div class="flex flex-col items-center cursor-pointer group">
+                        <i class="fas fa-fire text-2xl text-orange-500 group-hover:scale-110 transition-transform"></i>
+                        <div class="stat-label">${likes}</div>
+                    </div>
+                    <div class="flex flex-col items-center cursor-pointer group">
+                        <i class="fas fa-eye text-2xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                        <div class="stat-label">${views}</div>
+                    </div>
+                    <div class="flex flex-col items-center cursor-pointer group">
+                        <i class="fas fa-share-alt text-2xl text-white group-hover:scale-110 transition-transform"></i>
+                    </div>
                 </div>
+
                 <div class="info-panel">
-                    <h3 class="font-bold text-cyan-400">@Shadow_Pro</h3>
-                    <p>${vid.title}</p>
+                    <h3 class="font-bold text-xl text-cyan-400 mb-1">@Shadow_User</h3>
+                    <p class="text-sm text-white/80 leading-relaxed">${vid.title} 🔥</p>
+                    <div class="flex items-center justify-end gap-2 text-[10px] text-white/40 mt-3">
+                        <i class="fas fa-music"></i>
+                        <span>الصوت الأصلي - ${vid.id}</span>
+                    </div>
                 </div>
+
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 pointer-events-none"></div>
             `;
             feed.appendChild(card);
         });
 
-        // تشغيل الفيديو عند الظهور
+        // مراقب التشغيل التلقائي (Intersection Observer)
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const v = entry.target.querySelector('video');
                 if (entry.isIntersecting) {
-                    v.play().catch(err => console.log("خطأ في التشغيل: ", err));
+                    v.play().catch(error => console.log("تحتاج لتفاعل المستخدم أولاً"));
                 } else {
                     v.pause();
+                    v.currentTime = 0;
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.6 });
 
         document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
 
-        // تفعيل الصوت والتشغيل عند أول لمسة (ضروري للمتصفحات)
-        window.addEventListener('click', () => {
-            document.querySelectorAll('video').forEach(v => {
-                v.muted = false;
-                v.play();
-            });
-        }, { once: true });
+        // تفعيل الصوت عند أول نقرة في أي مكان
+        window.onclick = () => {
+            document.querySelectorAll('video').forEach(v => v.muted = false);
+        };
     </script>
 </body>
 </html>
