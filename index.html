@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Stream Pro</title>
+    <title>Shadow Stream Pro - 100+ Feed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -14,82 +14,79 @@
         .app-container::-webkit-scrollbar { display: none; }
         .video-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        .glass-actions { position: absolute; left: 20px; bottom: 120px; background: var(--glass-bg); backdrop-filter: blur(15px); padding: 25px 12px; border-radius: 40px; display: flex; flex-direction: column; gap: 30px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 10; }
+        .glass-actions { position: absolute; left: 20px; bottom: 120px; background: var(--glass-bg); backdrop-filter: blur(15px); padding: 20px 10px; border-radius: 40px; display: flex; flex-direction: column; gap: 25px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 10; }
         .info-panel { position: absolute; bottom: 40px; right: 20px; left: 100px; z-index: 10; text-align: right; }
-        .stat-label { font-size: 10px; text-align: center; color: var(--cyan-glow); font-weight: 900; }
-        .nav-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; z-index: 20; }
-        @keyframes pulse-red { 0%, 100% { transform: scale(0.95); } 70% { transform: scale(1); } }
-        .live-indicator { animation: pulse-red 2s infinite; }
+        .stat-label { font-size: 9px; text-align: center; color: var(--cyan-glow); font-weight: 900; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; z-index: 20; border-top: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
 
     <div class="absolute top-0 left-0 right-0 z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent">
-        <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-red-500 live-indicator"></div>
-            <span class="text-[10px] font-bold tracking-widest uppercase text-white/80">LIVE</span>
-        </div>
-        <h1 class="text-xl font-black tracking-tighter text-cyan-400 italic">SHADOW STREAM</h1>
+        <h1 class="text-xl font-black tracking-tighter text-cyan-400 italic">SHADOW STREAM <span class="text-white text-xs not-italic font-light">PRO</span></h1>
+        <div class="px-3 py-1 bg-red-600 rounded-full text-[10px] font-bold live-indicator">LIVE</div>
     </div>
 
     <div class="app-container" id="feed"></div>
 
     <div class="nav-bar">
-        <div class="flex flex-col items-center text-cyan-400"><i class="fas fa-bolt text-lg"></i><span class="text-[8px] mt-1 font-bold">FEED</span></div>
-        <div class="flex flex-col items-center text-white/40"><i class="fas fa-search text-lg"></i><span class="text-[8px] mt-1 font-bold">EXPLORE</span></div>
-        <div class="w-12 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-plus text-white"></i></div>
-        <div class="flex flex-col items-center text-white/40"><i class="far fa-comment-dots text-lg"></i><span class="text-[8px] mt-1 font-bold">INBOX</span></div>
-        <div class="flex flex-col items-center text-white/40"><i class="far fa-user text-lg"></i><span class="text-[8px] mt-1 font-bold">PROFILE</span></div>
+        <div class="flex flex-col items-center text-cyan-400"><i class="fas fa-bolt text-lg"></i></div>
+        <div class="flex flex-col items-center text-white/40"><i class="fas fa-search text-lg"></i></div>
+        <div class="w-12 h-10 bg-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20"><i class="fas fa-plus text-white"></i></div>
+        <div class="flex flex-col items-center text-white/40"><i class="far fa-comment-dots text-lg"></i></div>
+        <div class="flex flex-col items-center text-white/40"><i class="far fa-user text-lg"></i></div>
     </div>
 
     <script>
-        // الرابط الأساسي المستخرج من حسابك
         const cloudName = 'dssk5tabb';
         const feed = document.getElementById('feed');
         
-        // قائمة الفيديوهات الموجودة في المجموعة التي أرسلتها
-        const myVideos = [
-            { id: '01_Itzbic', title: 'العرض الأول' },
-            { id: '02_nz4lq0', title: 'الحالة الأولى' },
-            { id: '03_wicOob', title: 'الحالة الثانية' },
-            { id: '04_qeyknx', title: 'الحالة الثالثة' },
-            { id: '05_ggqazk', title: 'الحالة الرابعة' },
-            { id: '06_quce2q', title: 'الحالة الخامسة' },
-            { id: '07_rone4t', title: 'الخاتمة النهائية' }
-        ];
-
-        myVideos.forEach((vid) => {
+        // --- محرك التوليد التلقائي لـ 100 فيديو ---
+        const totalVideos = 100; 
+        
+        for (let i = 1; i <= totalVideos; i++) {
+            // تحويل الرقم إلى صيغة 01, 02... إذا كنت تستخدم هذا النمط
+            const videoId = i.toString().padStart(2, '0'); 
+            
             const card = document.createElement('div');
             card.className = 'video-card';
             
-            // بناء الرابط المباشر لكل فيديو
-            const videoUrl = `https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/${vid.id}.mp4`;
-            
+            // رابط الفيديو (يفترض أن الأسماء فيديو1، فيديو2... إلخ)
+            // ملاحظة: يمكنك تغيير نمط التسمية هنا ليناسب ملفاتك
+            const videoUrl = `https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/v${i}.mp4`;
+
             card.innerHTML = `
                 <video loop playsinline muted src="${videoUrl}"></video>
                 <div class="glass-actions">
-                    <div class="flex flex-col items-center"><i class="fas fa-fire text-2xl text-orange-500"></i><div class="stat-label">HOT</div></div>
-                    <div class="flex flex-col items-center"><i class="fas fa-eye text-2xl text-blue-400"></i><div class="stat-label">LIVE</div></div>
-                    <div class="flex flex-col items-center"><i class="fas fa-share-alt text-2xl text-white"></i></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-fire text-xl text-orange-500"></i><div class="stat-label">${(Math.random()*10).toFixed(1)}K</div></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-heart text-xl text-red-500"></i><div class="stat-label">LIKE</div></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-share text-xl text-white"></i></div>
                 </div>
                 <div class="info-panel">
-                    <h3 class="font-bold text-xl text-cyan-400 mb-1">@Shadow_Pro</h3>
-                    <p class="text-sm text-white/80">${vid.title}</p>
+                    <h3 class="font-bold text-lg text-cyan-400">@User_Stream_${i}</h3>
+                    <p class="text-sm text-white/70">محتوى حصري رقم ${i} 🔥 #ShadowStream</p>
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 pointer-events-none"></div>
             `;
             feed.appendChild(card);
-        });
+        }
 
+        // تحسين الأداء: تشغيل الفيديو الظاهر فقط
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const v = entry.target.querySelector('video');
-                if (entry.isIntersecting) { v.play(); } else { v.pause(); v.currentTime = 0; }
+                if (entry.isIntersecting) {
+                    v.play().catch(() => {});
+                } else {
+                    v.pause();
+                    v.currentTime = 0;
+                }
             });
-        }, { threshold: 0.6 });
+        }, { threshold: 0.7 });
 
         document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
 
+        // تفعيل الصوت عند اللمس
         window.onclick = () => { document.querySelectorAll('video').forEach(v => v.muted = false); };
     </script>
 </body>
