@@ -3,99 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Stream Pro - New Feed</title>
+    <title>Shadow Stream Pro - Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        :root { --cyan-glow: #00f3ff; --glass-bg: rgba(255, 255, 255, 0.05); }
-        body { background: #000; color: #fff; margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; }
+        :root { --cyan-glow: #00f3ff; }
+        body { background: #000; color: #fff; margin: 0; overflow: hidden; }
         .app-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
         .app-container::-webkit-scrollbar { display: none; }
-        .video-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; display: flex; align-items: center; }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        .glass-actions { position: absolute; left: 20px; bottom: 120px; background: var(--glass-bg); backdrop-filter: blur(15px); padding: 25px 12px; border-radius: 40px; display: flex; flex-direction: column; gap: 30px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 10; }
-        .info-panel { position: absolute; bottom: 40px; right: 20px; left: 100px; z-index: 10; text-align: right; }
-        .stat-label { font-size: 10px; text-align: center; color: var(--cyan-glow); font-weight: 900; }
-        .nav-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; z-index: 20; }
-        @keyframes pulse-red { 0%, 100% { transform: scale(0.95); } 70% { transform: scale(1); } }
-        .live-indicator { animation: pulse-red 2s infinite; }
+        .video-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
+        video { width: 100%; height: 100%; object-fit: cover; background: #000; }
+        .info-panel { position: absolute; bottom: 80px; right: 20px; z-index: 10; }
+        .glass-actions { position: absolute; left: 20px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="absolute top-0 left-0 right-0 z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent">
-        <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-red-500 live-indicator"></div>
-            <span class="text-[10px] font-bold tracking-widest uppercase text-white/80">LIVE FEED</span>
+    <div class="app-container" id="feed">
         </div>
-        <h1 class="text-xl font-black tracking-tighter text-cyan-400 italic">SHADOW STREAM</h1>
-    </div>
-
-    <div class="app-container" id="feed"></div>
-
-    <div class="nav-bar">
-        <div class="flex flex-col items-center text-cyan-400"><i class="fas fa-bolt text-lg"></i></div>
-        <div class="flex flex-col items-center text-white/40"><i class="fas fa-search text-lg"></i></div>
-        <div class="w-12 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-plus text-white"></i></div>
-        <div class="flex flex-col items-center text-white/40"><i class="far fa-comment-dots text-lg"></i></div>
-        <div class="flex flex-col items-center text-white/40"><i class="far fa-user text-lg"></i></div>
-    </div>
 
     <script>
         const cloudName = 'dssk5tabb';
         const feed = document.getElementById('feed');
         
-        // القائمة المستخرجة من رابط المجموعة الجديد (E491...)
-        const newVideos = [
-            { id: '08_p0l5j2', title: 'بداية الجزء الثاني' },
-            { id: '09_k8m2n1', title: 'تطور الأحداث' },
-            { id: '10_v7x4z9', title: 'المشهد الحماسي' },
-            { id: '11_r2t5w8', title: 'لحظة الصمت' },
-            { id: '12_m1q9v6', title: 'قبل النهاية' },
-            { id: '13_z4n7b3', title: 'الخاتمة الكبرى' }
+        // قائمة الفيديوهات - تأكد أن هذه الأسماء موجودة في حسابك
+        // ملاحظة: إذا لم تظهر، فهذا يعني أن الأسماء (ID) غير مطابقة لما في السحاب
+        const myVideos = [
+            { id: '01_Itzbic', title: 'فيديو رقم 1' },
+            { id: '02_nz4lq0', title: 'فيديو رقم 2' },
+            { id: '03_wicOob', title: 'فيديو رقم 3' }
         ];
 
-        newVideos.forEach((vid, index) => {
+        myVideos.forEach((vid) => {
             const card = document.createElement('div');
             card.className = 'video-card';
             
-            // رابط الفيديو المباشر من Cloudinary
+            // الرابط المباشر الصحيح
             const videoUrl = `https://res.cloudinary.com/${cloudName}/video/upload/q_auto,f_auto/${vid.id}.mp4`;
             
             card.innerHTML = `
-                <video loop playsinline muted src="${videoUrl}"></video>
+                <video loop playsinline src="${videoUrl}"></video>
                 <div class="glass-actions">
-                    <div class="flex flex-col items-center"><i class="fas fa-fire text-2xl text-orange-500"></i><div class="stat-label">HOT</div></div>
-                    <div class="flex flex-col items-center"><i class="fas fa-heart text-2xl text-red-500"></i><div class="stat-label">${(Math.random()*20).toFixed(1)}K</div></div>
-                    <div class="flex flex-col items-center"><i class="fas fa-share-alt text-2xl text-white"></i></div>
+                    <i class="fas fa-heart text-2xl text-red-500"></i>
+                    <i class="fas fa-share text-2xl text-white"></i>
                 </div>
                 <div class="info-panel">
-                    <h3 class="font-bold text-xl text-cyan-400 mb-1">@Shadow_Creator</h3>
-                    <p class="text-sm text-white/80 leading-relaxed">${vid.title} 🔥</p>
+                    <h3 class="font-bold text-cyan-400">@Shadow_Pro</h3>
+                    <p>${vid.title}</p>
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 pointer-events-none"></div>
             `;
             feed.appendChild(card);
         });
 
-        // مراقب التمرير لتشغيل الفيديو الحالي فقط
+        // تشغيل الفيديو عند الظهور
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const v = entry.target.querySelector('video');
                 if (entry.isIntersecting) {
-                    v.play().catch(() => {});
+                    v.play().catch(err => console.log("خطأ في التشغيل: ", err));
                 } else {
                     v.pause();
-                    v.currentTime = 0;
                 }
             });
-        }, { threshold: 0.6 });
+        }, { threshold: 0.5 });
 
         document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
 
-        // تشغيل الصوت عند أول لمسة للشاشة
-        window.onclick = () => { document.querySelectorAll('video').forEach(v => v.muted = false); };
+        // تفعيل الصوت والتشغيل عند أول لمسة (ضروري للمتصفحات)
+        window.addEventListener('click', () => {
+            document.querySelectorAll('video').forEach(v => {
+                v.muted = false;
+                v.play();
+            });
+        }, { once: true });
     </script>
 </body>
 </html>
